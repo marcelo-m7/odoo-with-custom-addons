@@ -35,9 +35,9 @@ services:
       retries: 10
 
     custom-addons:
-      build: ./custom-addons
+      build: ./extra-addons
       volumes:
-        - './custom-addons:/mnt/extra-addons'
+        - './extra-addons:/mnt/extra-addons'
       depends_on:
         postgresql:
           condition: service_healthy
