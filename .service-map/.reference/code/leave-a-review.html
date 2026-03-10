@@ -57,51 +57,51 @@
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
 <div class="max-w-md mx-auto min-h-screen flex flex-col border-x-4 border-black bg-background-light dark:bg-background-dark">
 <!-- Top Navigation -->
-<header class="p-6 border-b-4 border-black flex items-center gap-4 bg-primary">
+ param($m) $m.Groups[1].Value + ($m.Groups[2].Value -replace 'p-4|p-6|h-14|py-6|pt-6|pt-4|pb-4|pb-6', '') + ' h-18 px-6 py-6 ' ">
 <button class="bg-white border-2 border-black p-2 flex items-center justify-center neo-brutalist-shadow-sm active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">
 <span class="material-symbols-outlined text-black font-bold">arrow_back</span>
 </button>
-<h1 class="text-2xl font-black uppercase tracking-tighter text-black">Service Complete</h1>
+<h1 class="text-2xl font-bold uppercase tracking-widest text-black">Service Complete</h1>
 </header>
 <main class="flex-1 p-6 flex flex-col gap-8">
 <!-- Service Provider Info -->
 <div class="bg-white dark:bg-slate-800 neo-brutalist-border neo-brutalist-shadow p-6 flex flex-col items-center text-center">
-<div class="w-24 h-24 neo-brutalist-border mb-4 overflow-hidden bg-primary/20">
+<div class="w-24 h-24 neo-brutalist-border mb-8 overflow-hidden bg-primary/20">
 <img alt="Provider Profile" class="w-full h-full object-cover" data-alt="Professional service provider headshot portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkUzzJKm1LHXguOFu28VWvDnf2imB2DNUDo7FYHq5etDEm0Q6euoh4ILnNzmtGhcVygiKJY0IgSSWlNIvT9GmH1eKidqTFeZWfEAN_xZf00c69d_Inbs0ZI4i8wnLIH_3plBO-SbtHoFPTyjtnJ_bArl102uikWsIJeiuXQNzHZykJ4XCUe0pu2pa0LTYn3sIx6R9K-ZV-SiAGyIGyBjea5AcgHrZ53RzueT-kS_GidUV49HNMzYFq-e7TjBwsUXULke11or1B0lg"/>
 </div>
-<h2 class="text-2xl font-black text-black dark:text-white uppercase italic">Marcus J.</h2>
+<h2 class="text-2xl font-bold text-black dark:text-white uppercase italic">Marcus J.</h2>
 <p class="text-black/60 dark:text-slate-400 font-bold uppercase text-sm">Elite Plumbing Specialist</p>
-<div class="mt-2 flex items-center gap-1 bg-black text-primary px-3 py-1 font-black text-xs uppercase">
+<div class="mt-2 flex items-center gap-1 bg-black text-primary px-3 py-1 font-bold text-xs uppercase">
 <span class="material-symbols-outlined text-xs">verified</span> Verified Professional
                 </div>
 </div>
 <!-- Review Form Section -->
 <div class="flex flex-col gap-6">
 <div class="text-center">
-<h3 class="text-3xl font-black uppercase italic tracking-tight text-black dark:text-white">How was the job?</h3>
+<h3 class="text-3xl font-bold uppercase italic tracking-tight text-black dark:text-white">How was the job?</h3>
 <p class="text-black/60 dark:text-slate-400 font-medium">Rate your experience with Marcus</p>
 </div>
 <!-- Star Rating Component -->
-<div class="flex justify-center gap-2 py-4">
-<button class="w-12 h-12 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary group transition-colors">
+<div class="flex justify-center gap-2 h-14">
+<button class="w-12 h-14 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary group transition-colors">
 <span class="material-symbols-outlined text-black group-hover:text-white text-3xl font-bold">star</span>
 </button>
-<button class="w-12 h-12 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary group transition-colors">
+<button class="w-12 h-14 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary group transition-colors">
 <span class="material-symbols-outlined text-black group-hover:text-white text-3xl font-bold">star</span>
 </button>
-<button class="w-12 h-12 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary group transition-colors">
+<button class="w-12 h-14 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary group transition-colors">
 <span class="material-symbols-outlined text-black group-hover:text-white text-3xl font-bold">star</span>
 </button>
-<button class="w-12 h-12 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary group transition-colors">
+<button class="w-12 h-14 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary group transition-colors">
 <span class="material-symbols-outlined text-black group-hover:text-white text-3xl font-bold">star</span>
 </button>
-<button class="w-12 h-12 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary/20 group transition-colors">
+<button class="w-12 h-14 bg-white dark:bg-slate-800 border-2 border-black flex items-center justify-center neo-brutalist-shadow-sm hover:bg-primary/20 group transition-colors">
 <span class="material-symbols-outlined text-black/20 group-hover:text-black text-3xl font-bold">star</span>
 </button>
 </div>
 <!-- Text Area -->
 <div class="flex flex-col gap-2">
-<label class="text-sm font-black uppercase tracking-widest text-black dark:text-slate-300">Your Feedback</label>
+<label class="text-sm font-bold uppercase tracking-widest text-black dark:text-slate-300">Your Feedback</label>
 <textarea class="w-full h-40 neo-brutalist-border bg-white dark:bg-slate-800 p-4 text-black dark:text-white font-bold placeholder:text-black/30 dark:placeholder:text-slate-500 focus:ring-0 focus:border-primary neo-brutalist-shadow-sm outline-none" placeholder="TELL US WHAT YOU LIKED OR WHAT CAN BE IMPROVED..."></textarea>
 </div>
 <!-- Photo Upload Placeholder -->
@@ -113,10 +113,10 @@
 </main>
 <!-- Footer Action -->
 <footer class="p-6 mt-auto">
-<button class="w-full bg-primary py-5 neo-brutalist-border neo-brutalist-shadow text-black font-black text-xl uppercase italic tracking-tighter hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+<button class="w-full bg-primary h-14 neo-brutalist-border neo-brutalist-shadow text-black font-bold text-xl uppercase italic tracking-tighter hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
                 Submit Review
             </button>
-<p class="text-center mt-6 text-[10px] uppercase font-black text-black/40 dark:text-slate-600 tracking-[0.2em]">
+<p class="text-center mt-8 text-[10px] uppercase font-bold text-black/40 dark:text-slate-600 tracking-[0.2em]">
                 Your review helps the ServiceMap community
             </p>
 </footer>

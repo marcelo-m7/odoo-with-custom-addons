@@ -49,11 +49,11 @@
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
 <div class="max-w-md mx-auto min-h-screen flex flex-col pb-10">
 <!-- Top App Bar -->
-<header class="flex items-center p-6 justify-between">
+ param($m) $m.Groups[1].Value + ($m.Groups[2].Value -replace 'p-4|p-6|h-14|py-6|pt-6|pt-4|pb-4|pb-6', '') + ' h-18 px-6 py-6 ' ">
 <button class="flex size-12 shrink-0 items-center justify-center rounded-lg bg-primary/20 hover:bg-primary/30 text-primary neo-brutalism-border transition-all">
 <span class="material-symbols-outlined">arrow_back</span>
 </button>
-<h1 class="text-2xl font-extrabold uppercase tracking-tighter text-slate-900 dark:text-white">Request Service</h1>
+<h1 class="text-2xl font-extrabold uppercase tracking-widest text-slate-900 dark:text-white">Request Service</h1>
 <div class="size-12"></div> <!-- Spacer for symmetry -->
 </header>
 <!-- Form Content -->
@@ -62,7 +62,7 @@
 <section class="space-y-2">
 <label class="block text-sm font-bold uppercase tracking-wider text-primary">Service Type</label>
 <div class="relative">
-<select class="w-full h-14 bg-white dark:bg-slate-800 neo-brutalism-border rounded-none appearance-none px-4 font-semibold text-slate-900 dark:text-white focus:ring-0 focus:outline-none">
+<select class="w-full h-14 bg-white dark:bg-slate-800 neo-brutalism-border rounded-lg appearance-none px-4 font-semibold text-slate-900 dark:text-white focus:ring-0 focus:outline-none">
 <option value="">Select a service category</option>
 <option value="plumbing">Plumbing &amp; Leaks</option>
 <option value="electrical">Electrical Repairs</option>
@@ -77,7 +77,7 @@
 <!-- Description -->
 <section class="space-y-2">
 <label class="block text-sm font-bold uppercase tracking-wider text-primary">Description of the problem</label>
-<textarea class="w-full bg-white dark:bg-slate-800 neo-brutalism-border rounded-none p-4 font-medium text-slate-900 dark:text-white min-h-[120px] focus:ring-0 focus:outline-none placeholder:text-slate-400" placeholder="Describe what needs to be fixed in detail..."></textarea>
+<textarea class="w-full bg-white dark:bg-slate-800 neo-brutalism-border rounded-lg p-4 font-medium text-slate-900 dark:text-white min-h-[120px] focus:ring-0 focus:outline-none placeholder:text-slate-400" placeholder="Describe what needs to be fixed in detail..."></textarea>
 </section>
 <!-- Visuals / Upload -->
 <section class="space-y-2">
@@ -110,11 +110,11 @@
 </div>
 </section>
 <!-- Map Preview (Secondary visual) -->
-<div class="w-full h-32 rounded-none overflow-hidden neo-brutalism-border">
+<div class="w-full h-32 rounded-lg overflow-hidden neo-brutalism-border">
 <img alt="Map view of the current location" class="w-full h-full object-cover grayscale contrast-125 brightness-50" data-alt="Abstract dark city map with neon routes" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzp8rS1YHnNzmiBy8G5sMAS8Oit2a1RZ3FphRW7Y3y3cIiCYn6ck6VYFbPfGKRRNUNuVJnp_vXC40JlYRpustatlEcP-ImbwQOcq41ljyp0hbsTVLoMBfX9BjNdrGSbbiP7KG4jL0RaXDZzoH4qqsOr3esNgNpvmHDq8mYZYYHImmY-w8nZagd3MdjlnZap3k47CzK5hAhzJeQDIvpmY0EXylrk1gbyNf-exEmDJc-76Fjx3UEgxYvkbo8DACb-fml4QtajXJJR2k"/>
 </div>
 <!-- Submit Button -->
-<button class="w-full h-16 pride-sparkle-gradient neo-brutalism-border flex items-center justify-center gap-3 text-white font-black text-xl uppercase tracking-widest active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">
+<button class="w-full h-16 pride-sparkle-gradient neo-brutalism-border flex items-center justify-center gap-3 text-white font-bold text-xl uppercase tracking-widest active:translate-x-1 active:translate-y-1 active:shadow-none transition-all">
                 Send Request
                 <span class="material-symbols-outlined">send</span>
 </button>

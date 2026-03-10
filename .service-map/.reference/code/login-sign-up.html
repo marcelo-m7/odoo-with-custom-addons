@@ -49,8 +49,8 @@
   </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
 <!-- Header Section -->
-<header class="flex items-center p-6 justify-between">
-<div class="flex items-center justify-center h-12 w-12 rounded-xl bg-primary/20 text-primary border-2 border-primary/40">
+ param($m) $m.Groups[1].Value + ($m.Groups[2].Value -replace 'p-4|p-6|h-14|py-6|pt-6|pt-4|pb-4|pb-6', '') + ' h-18 px-6 py-6 ' ">
+<div class="flex items-center justify-center h-14 w-12 rounded-xl bg-primary/20 text-primary border-2 border-primary/40">
 <span class="material-symbols-outlined">arrow_back</span>
 </div>
 <div class="flex-1 px-4">
@@ -60,42 +60,42 @@
 <main class="flex-1 px-6 pt-8 pb-12 max-w-md mx-auto w-full">
 <!-- Welcome Text -->
 <div class="mb-10">
-<h1 class="text-4xl font-black leading-none mb-4 uppercase italic">Welcome<br/>Back</h1>
+<h1 class="text-4xl font-bold leading-none mb-8 uppercase italic">Welcome<br/>Back</h1>
 <p class="text-slate-400 font-medium">Connect with local experts or manage your services instantly.</p>
 </div>
 <!-- Phone Input Section -->
-<div class="space-y-6">
+<div class="space-y-8">
 <div class="space-y-2">
-<label class="text-xs font-black uppercase tracking-widest text-primary">Phone Number</label>
+<label class="text-xs font-bold uppercase tracking-widest text-primary">Phone Number</label>
 <div class="relative">
-<input class="w-full bg-slate-800/50 border-2 border-slate-700 rounded-none p-4 text-lg font-bold focus:ring-0 focus:border-primary outline-none neo-brutalist-border transition-all" placeholder="+1 (555) 000-0000" type="text"/>
+<input class="w-full bg-slate-800/50 border-2 border-slate-700 rounded-lg p-4 text-lg font-bold focus:ring-0 focus:border-primary outline-none neo-brutalist-border transition-all" placeholder="+1 (555) 000-0000" type="text"/>
 </div>
 </div>
 <!-- Main CTA -->
-<button class="w-full bg-primary text-black font-black py-5 px-6 rounded-none neo-brutalist-border uppercase tracking-tighter text-xl hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
+<button class="w-full bg-primary text-black font-bold h-14 px-6 rounded-lg neo-brutalist-border uppercase tracking-widest text-xl hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none transition-all">
                 Continue
             </button>
 </div>
 <!-- Divider -->
 <div class="relative flex items-center py-10">
 <div class="flex-grow border-t-2 border-slate-800"></div>
-<span class="flex-shrink mx-4 text-xs font-black uppercase text-slate-500 tracking-widest">or sign in with</span>
+<span class="flex-shrink mx-4 text-xs font-bold uppercase text-slate-500 tracking-widest">or sign in with</span>
 <div class="flex-grow border-t-2 border-slate-800"></div>
 </div>
 <!-- Social Logins -->
 <div class="grid grid-cols-2 gap-4">
-<button class="flex items-center justify-center gap-3 bg-white text-black font-bold py-4 px-4 rounded-none neo-brutalist-border hover:bg-slate-100 transition-colors">
+<button class="flex items-center justify-center gap-3 bg-white text-black font-bold h-14 px-4 rounded-lg neo-brutalist-border hover:bg-slate-100 transition-colors">
 <img alt="Google Logo" class="w-5 h-5" data-alt="Google colorful logo icon" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_yJnsd_15Qo70iDH35AYNFWLX7lpZQeo2Y-jDlHRCpcFi7DJxZVGMhQMgGowbYizgjAsDmeT7IFYhm8zoWP-xIzGisbVGDpxTA9aAiSWqogo0G7KfOrynxCcGIKnX0QiJ__aJfaD4lTX5K_G6-ZDdC5ncYeasw9EyidkGru_vW6_l2elcuPm_ngs4RPKfz4-zyBIijpMEmT2doFTSCwHNuMdTrbNgOnTbveeb4-NGTVeWOtvD49kcS9DiwxE-g3m3TC4aeepfL8k"/>
 <span class="uppercase text-sm">Google</span>
 </button>
-<button class="flex items-center justify-center gap-3 bg-black text-white font-bold py-4 px-4 rounded-none neo-brutalist-border hover:bg-slate-900 transition-colors">
+<button class="flex items-center justify-center gap-3 bg-black text-white font-bold h-14 px-4 rounded-lg neo-brutalist-border hover:bg-slate-900 transition-colors">
 <span class="material-symbols-outlined text-white">ios</span>
 <span class="uppercase text-sm">Apple</span>
 </button>
 </div>
 <!-- Footer Links -->
 <div class="mt-12 space-y-4 text-center">
-<a class="block text-primary font-black uppercase tracking-tighter text-lg underline decoration-4 underline-offset-4 decoration-primary/30 hover:decoration-primary" href="#">
+<a class="block text-primary font-bold uppercase tracking-widest text-lg underline decoration-4 underline-offset-4 decoration-primary/30 hover:decoration-primary" href="#">
                 Create Provider Account
             </a>
 <p class="text-xs text-slate-500 font-bold uppercase tracking-widest pt-4">

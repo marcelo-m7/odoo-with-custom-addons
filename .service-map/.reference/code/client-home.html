@@ -50,8 +50,8 @@
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-32">
 <!-- Top Header & Search -->
-<header class="p-4 pt-6 sticky top-0 bg-background-light dark:bg-background-dark z-20">
-<div class="flex items-center justify-between mb-6">
+ param($m) $m.Groups[1].Value + ($m.Groups[2].Value -replace 'p-4|p-6|h-14|py-6|pt-6|pt-4|pb-4|pb-6', '') + ' h-18 px-6 py-6 ' ">
+<div class="flex items-center justify-between mb-8">
 <div class="flex items-center gap-2">
 <div class="w-10 h-10 bg-primary border-2 border-black rounded-lg neo-shadow-sm flex items-center justify-center">
 <span class="material-symbols-outlined text-black font-bold">home_repair_service</span>
@@ -66,12 +66,12 @@
 <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
 <span class="material-symbols-outlined text-slate-500 dark:text-slate-400">search</span>
 </div>
-<input class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 border-2 border-black rounded-xl neo-shadow focus:ring-0 focus:border-primary transition-all font-bold placeholder:text-slate-500 text-lg" placeholder="What service do you need?" type="text"/>
+<input class="w-full pl-12 pr-4 h-14 bg-white dark:bg-slate-800 border-2 border-black rounded-xl neo-shadow focus:ring-0 focus:border-primary transition-all font-bold placeholder:text-slate-500 text-lg" placeholder="What service do you need?" type="text"/>
 </div>
 </header>
 <!-- Categories Grid -->
-<section class="px-4 mt-6">
-<div class="flex items-center justify-between mb-4">
+<section class="px-4 mt-8">
+<div class="flex items-center justify-between mb-8">
 <h2 class="text-xl font-extrabold uppercase tracking-tight">Categories</h2>
 <a class="text-sm font-bold text-primary underline" href="#">See All</a>
 </div>
@@ -104,7 +104,7 @@
 </section>
 <!-- Nearby Services Section -->
 <section class="mt-10">
-<div class="px-4 flex items-center justify-between mb-4">
+<div class="px-4 flex items-center justify-between mb-8">
 <h2 class="text-xl font-extrabold uppercase tracking-tight">Nearby Services</h2>
 </div>
 <div class="flex overflow-x-auto gap-4 px-4 pb-6 no-scrollbar">
@@ -127,8 +127,8 @@
 <span>0.8 miles away</span>
 </div>
 <div class="flex items-center justify-between mt-auto">
-<span class="font-black text-xl">$25<small class="text-xs font-normal">/hr</small></span>
-<button class="bg-primary text-white font-bold px-4 py-2 border-2 border-black rounded-lg neo-shadow-sm active:translate-y-0.5 active:shadow-none transition-all">
+<span class="font-bold text-xl">$25<small class="text-xs font-normal">/hr</small></span>
+<button class="bg-primary text-white font-bold px-4 h-14 border-2 border-black rounded-lg neo-shadow-sm active:translate-y-0.5 active:shadow-none transition-all">
                             Book Now
                         </button>
 </div>
@@ -153,8 +153,8 @@
 <span>1.2 miles away</span>
 </div>
 <div class="flex items-center justify-between mt-auto">
-<span class="font-black text-xl">$45<small class="text-xs font-normal">/hr</small></span>
-<button class="bg-primary text-white font-bold px-4 py-2 border-2 border-black rounded-lg neo-shadow-sm active:translate-y-0.5 active:shadow-none transition-all">
+<span class="font-bold text-xl">$45<small class="text-xs font-normal">/hr</small></span>
+<button class="bg-primary text-white font-bold px-4 h-14 border-2 border-black rounded-lg neo-shadow-sm active:translate-y-0.5 active:shadow-none transition-all">
                             Book Now
                         </button>
 </div>
@@ -163,8 +163,8 @@
 </div>
 </section>
 <!-- Top Rated Freelancers -->
-<section class="px-4 mt-6">
-<h2 class="text-xl font-extrabold uppercase tracking-tight mb-4">Top Rated Pros</h2>
+<section class="px-4 mt-8">
+<h2 class="text-xl font-extrabold uppercase tracking-tight mb-8">Top Rated Pros</h2>
 <div class="space-y-4">
 <div class="flex items-center gap-4 p-3 bg-white dark:bg-slate-800 border-2 border-black rounded-xl neo-shadow-sm">
 <div class="w-16 h-16 rounded-lg border-2 border-black overflow-hidden shrink-0">
@@ -175,7 +175,7 @@
 <h4 class="font-bold">Marco Ross</h4>
 <div class="flex items-center gap-0.5">
 <span class="material-symbols-outlined text-yellow-400 text-xs fill-current">star</span>
-<span class="text-xs font-black">5.0</span>
+<span class="text-xs font-bold">5.0</span>
 </div>
 </div>
 <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase mb-1">Master Plumber</p>
@@ -195,7 +195,7 @@
 <h4 class="font-bold">Sarah Jenkins</h4>
 <div class="flex items-center gap-0.5">
 <span class="material-symbols-outlined text-yellow-400 text-xs fill-current">star</span>
-<span class="text-xs font-black">4.8</span>
+<span class="text-xs font-bold">4.8</span>
 </div>
 </div>
 <p class="text-xs text-slate-500 dark:text-slate-400 font-bold uppercase mb-1">Skin Specialist</p>
@@ -210,18 +210,18 @@
 </section>
 <!-- Map View Sticky Toggle -->
 <div class="fixed bottom-24 left-1/2 -translate-x-1/2 z-30">
-<button class="pride-gradient text-black font-black uppercase text-sm py-3 px-8 rounded-full border-2 border-black flex items-center gap-2 neo-shadow transition-transform active:scale-95">
-<span class="material-symbols-outlined font-black">map</span>
+<button class="pride-gradient text-black font-bold uppercase text-sm h-14 px-8 rounded-full border-2 border-black flex items-center gap-2 neo-shadow transition-transform active:scale-95">
+<span class="material-symbols-outlined font-bold">map</span>
             View on Map
         </button>
 </div>
 <!-- Bottom Navigation Bar -->
 <nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t-4 border-black px-6 pb-6 pt-3 flex justify-between items-center z-40">
 <a class="flex flex-col items-center gap-1 group" href="#">
-<div class="w-12 h-12 bg-primary border-2 border-black rounded-xl neo-shadow-sm flex items-center justify-center -translate-y-2">
+<div class="w-12 h-14 bg-primary border-2 border-black rounded-xl neo-shadow-sm flex items-center justify-center -translate-y-2">
 <span class="material-symbols-outlined text-white font-bold">home</span>
 </div>
-<span class="text-[10px] font-black uppercase tracking-widest text-primary">Home</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary">Home</span>
 </a>
 <a class="flex flex-col items-center gap-1 group text-slate-400 dark:text-slate-500" href="#">
 <div class="w-10 h-10 flex items-center justify-center">
