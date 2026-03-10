@@ -1,6 +1,14 @@
 services:
   odoo:
     image: 'odoo:19'
+    restart: unless-stopped
+    command:
+      - /bin/sh
+      - -c
+      - |
+        rm -rf /mnt/extra-addons/* &&
+        cp -a /mnt/source-addons/. /mnt/extra-addons/ &&
+        exec /entrypoint.sh odoo
     environment:
       - SERVICE_URL_ODOO_8069
       - HOST=postgresql
@@ -9,6 +17,10 @@ services:
     volumes:
       - 'odoo-web-data:/var/lib/odoo'
       - 'odoo-extra-addons:/mnt/extra-addons'
+      - './extra-addons:/mnt/source-addons:ro'
+    depends_on:
+      postgresql:
+        condition: service_healthy
     healthcheck:
       test:
         - CMD
@@ -20,6 +32,7 @@ services:
       retries: 30
   postgresql:
     image: 'postgres:16-alpine'
+    restart: unless-stopped
     volumes:
       - 'postgresql-data:/var/lib/postgresql/data'
     environment:
@@ -34,12 +47,7 @@ services:
       timeout: 20s
       retries: 10
 
-    custom-addons:
-      build: ./extra-addons
-      volumes:
-        - './extra-addons:/mnt/extra-addons'
-      depends_on:
-        postgresql:
-          condition: service_healthy
-        odoo:
-          condition: service_healthy
+volumes:
+  odoo-web-data:
+  odoo-extra-addons:
+  postgresql-data:
