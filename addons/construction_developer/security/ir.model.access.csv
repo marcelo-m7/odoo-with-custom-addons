@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_remark_category_user,construction.remark.category user,model_construction_remark_category,base.group_user,1,1,1,1
+access_remark_stage_user,construction.remark.stage user,model_construction_remark_stage,base.group_user,1,1,1,1
+access_remark_user,construction.remark user,model_construction_remark,base.group_user,1,1,1,1
+access_cost_nature_report_user,construction.cost.nature.analysis.report user,model_construction_cost_nature_analysis_report,base.group_user,1,1,1,1

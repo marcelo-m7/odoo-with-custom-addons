@@ -1,0 +1,40 @@
+{
+    'name': 'Construction Developer',
+    'version': '19.0.0.0.8',
+    'category': 'Construction',
+    'depends': [
+        'construction',
+        'mrp',
+    ],
+    'data': [
+        'data/res_config_settings.xml',
+        'security/ir.model.access.csv',
+        'data/ir_actions_act_window.xml',
+        'data/ir_actions_server.xml',
+        'data/ir_ui_view.xml',
+        'data/ir_ui_menu.xml',
+        'data/ir_embedded_actions.xml',
+        'data/qweb_view.xml',
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'construction_developer/static/src/widgets/apply_to_section_widget.js',
+            'construction_developer/static/src/widgets/apply_to_section_widget.xml',
+            'construction_developer/static/src/widgets/project_remark_state_selection.js',
+            'construction_developer/static/src/scss/sale_order.scss',
+            'construction_developer/static/src/js/mail_chatter.xml',
+            'construction_developer/static/src/js/patch.js',
+        ],
+    },
+    'cloc_exclude': [
+        'data/qweb_view.xml',
+        'static/src/scss/sale_order.scss',
+        'static/src/widgets/apply_to_section_widget.xml',
+        "static/src/js/mail_chatter.xml",
+    ],
+    'images': ['images/main.png'],
+    'license': 'OEEL-1',
+    'author': 'Odoo S.A.',
+    'url': "https://www.odoo.com/trial?industry&selected_app=construction_developer",
+    'website': "https://www.odoo.com/all-industries",
+}

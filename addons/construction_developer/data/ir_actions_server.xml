@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <!-- Update delivery quantities from sale order line list header button -->
+    <record id="action_sol_update_qty_delivered" model="ir.actions.server">
+        <field name="name">Construction Developer: Update Delivered Quantities</field>
+        <field name="model_id" ref="sale.model_sale_order_line"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+for sol in records:
+    sol.write({
+        'qty_delivered': sol.qty_delivered + sol.quantity_increment,
+        'quantity_increment': 0,
+        'progress_increment': 0,
+    })
+action = {
+    'type': 'ir.actions.client',
+    'tag': 'display_notification',
+    'params': {
+        'message': "Delivered quantities updated.",
+        'type': 'success',
+        'next': {'type': 'ir.actions.client', 'tag': 'soft_reload'},
+    },
+}
+]]></field>
+    </record>
+
+    <!-- Apply section progress to child lines — called from JS widget -->
+    <record id="action_sol_update_section_progress" model="ir.actions.server">
+        <field name="name">Construction Developer: Apply Section Progress</field>
+        <field name="model_id" ref="sale.model_sale_order_line"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+lines = record.order_id.order_line.sorted(key=lambda sol: sol.sequence)
+i = [sol.sequence for sol in lines].index(record.sequence) + 1
+while (i < len(lines) and
+      ((record.display_type == 'line_section' and lines[i].display_type != 'line_section')
+       or (record.display_type == 'line_subsection' and lines[i].display_type not in ['line_subsection', 'line_section']))):
+    if lines[i].is_deliverable:
+        increment = min(
+            lines[i].product_uom_qty - lines[i].qty_delivered,
+            lines[i].product_uom_qty * record.progress_increment,
+        )
+        percentage = increment / lines[i].product_uom_qty if lines[i].product_uom_qty else False
+        lines[i].write({'quantity_increment': increment, 'progress_increment': percentage})
+    i += 1
+record.write({'progress_increment': 0})
+action = {'type': 'ir.actions.client', 'tag': 'soft_reload'}
+]]></field>
+    </record>
+
+    <!-- Set current BoM as template for its product -->
+    <record id="server_action_set_bom_as_template" model="ir.actions.server">
+        <field name="name">Construction Developer: Set BoM as Template</field>
+        <field name="model_id" ref="mrp.model_mrp_bom"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+for bom in records:
+    # Archive any existing template for the same product
+    old_templates = env['mrp.bom'].search([
+        ('product_id', '=', bom.product_id.id),
+        ('is_template', '=', True),
+        ('id', '!=', bom.id),
+    ])
+    old_templates.write({'active': False})
+    bom.write({'is_template': True})
+action = {
+    'type': 'ir.actions.client',
+    'tag': 'display_notification',
+    'params': {
+        'message': ', '.join(b.code for b in records) + " saved as template.",
+        'type': 'success',
+    },
+}
+]]></field>
+    </record>
+
+    <!-- Recompute BoM unit price from the sum of component prices -->
+    <record id="server_action_recompute_price_with_components_prices" model="ir.actions.server">
+        <field name="name">Construction Developer: Recompute BoM Price from Components</field>
+        <field name="model_id" ref="mrp.model_mrp_bom"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+for bom in records:
+            bom.write({'unit_price': sum(
+        line.unit_price * line.product_qty
+        for line in bom.bom_line_ids
+            )})
+]]></field>
+    </record>
+
+    <!-- Open the linked BoM form from a sale order line -->
+    <record id="server_action_open_sol_bom" model="ir.actions.server">
+        <field name="name">Construction Developer: Open SOL BoM</field>
+        <field name="model_id" ref="sale.model_sale_order_line"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+action = {
+    'type': 'ir.actions.act_window',
+    'res_model': 'mrp.bom',
+    'res_id': record.line_bom_id.id,
+    'view_mode': 'form',
+    'target': 'new',
+}
+]]></field>
+    </record>
+
+    <!-- Open Cost Nature Analysis report filtered by project or sale orders -->
+    <record id="action_compute_cost_nature_analysis_report" model="ir.actions.server">
+        <field name="name">Construction Developer: Open Cost Nature Analysis</field>
+        <field name="model_id" ref="product.model_product_product"/>
+        <field name="state">code</field>
+        <field name="code"><![CDATA[
+project_id = env.context.get('project_id')
+active_ids = env.context.get('active_ids', [])
+
+if project_id:
+    so_ids = env['sale.order'].search([('project_id', '=', project_id)]).ids
+elif active_ids:
+    so_ids = active_ids
+else:
+    so_ids = []
+
+domain = [('so_id', 'in', so_ids)] if so_ids else []
+
+action = {
+    'name': "Cost Nature Analysis",
+    'type': 'ir.actions.act_window',
+    'res_model': 'construction.cost.nature.analysis.report',
+    'view_mode': 'list',
+    'domain': domain,
+    'context': {
+        'search_default_group_by_cost_nature': True,
+        'search_default_group_by_category': True,
+        'search_default_group_by_product': True,
+    },
+}
+]]></field>
+    </record>
+</odoo>

@@ -1,0 +1,750 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+    <record id="sale_order_list_view" model="ir.ui.view">
+        <field name="name">Construction list view for Sale Order Lines</field>
+        <field name="model">sale.order.line</field>
+        <field name="type">list</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list default_order="order_id desc,sequence" create="0" editable="bottom" expand="True" decoration-info="display_type" decoration-it="display_type == 'line_note'" decoration-bf="display_type == 'line_section'">
+                <header>
+                    <button class="btn btn-primary" name="%(action_sol_update_qty_delivered)d" type="action" string="Update Delivery"/>
+                </header>
+                <field name="reference" readonly="True"/>
+                <field name="name" readonly="True"/>
+                <field name="sol_contract_type" optional="hide"/>
+                <field name="product_uom_qty" string="Qty" readonly="True"
+                    invisible="display_type"
+                />
+                <field name="product_uom_id" widget="many2one_uom" readonly="True" groups="uom.group_uom"
+                    invisible="display_type"
+                />
+                <field name="delivered_progress" widget="progressbar" readonly="True"
+                    invisible="is_undeliverable or delivered_progress == 0"
+                />
+                <field name="quantity_increment" width="130px"
+                    invisible="is_undeliverable or display_type"
+                />
+                <field name="progress_increment" widget="percentage" width="130px"
+                    invisible="not display_button and not is_deliverable"
+                />
+                <field name="id" column_invisible="True"/> <!-- this invisible field is necessary to pass the id field to the widget -->
+                <widget name="apply_to_section_widget"/>
+                <field name="current_progress" widget="progressbar" readonly="True"
+                    invisible="display_type or is_undeliverable or current_progress == 0"
+                />
+            </list>
+        </field>
+    </record>
+    <record id="sale_order_filter" model="ir.ui.view">
+        <field name="name">Construction list view search filters for Sale Order Lines</field>
+        <field name="model">sale.order.line</field>
+        <field name="type">search</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <search string="Search Sales Order">
+                <filter string="Not Started"
+                    name="not_started"
+                    domain="[('delivered_progress', '=', 0), ('display_type', '=', False)]"
+                    help="Sales Order Lines that have not been started yet (0% progress)"/>
+                <filter string="In Progress"
+                    name="in_progress"
+                    domain="[('delivered_progress', '&gt;', 0), ('display_type', '=', False), ('delivered_progress', '&lt;', 100)]"
+                    help="Sales Order Lines that are between 0 and 100% progress"/>
+                <filter string="Fully Invoiced"
+                    name="fully_invoiced"
+                    domain="[('delivered_progress', '&gt;=', 100), ('display_type', '=', False)]"
+                    help="Sales Order Lines that are at 100% progress"/>
+                <filter string="Structure"
+                    name="structure"
+                    domain="[('display_type', '!=', False)]"
+                    help="The structure Sale Order Lines"/>
+                <field name="order_id"/>
+                <field name="product_id"/>
+                <group>
+                    <filter string="Product" name="product" context="{'group_by':'product_id'}"/>
+                    <filter string="Order" name="order" context="{'group_by':'order_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="sale_order_form_view_inherit" model="ir.ui.view">
+        <field name="arch" type="xml">
+            <xpath expr="//list//field[@name='sequence']" position="after">
+                <field name="sequence" optional="show" column_invisible="not parent.id" decoration-muted="1" width="30" options="{'hide_trailing_zeros': true}" string="#"/>
+            </xpath>
+            <xpath expr="//form" position="attributes">
+                <attribute name="class" add="o_so_form" separator=" "/>
+            </xpath>
+            <xpath expr="//notebook//page[@name='order_lines']//list//field[@name='tax_ids']" position="attributes">
+                <attribute name="width">150px</attribute>
+            </xpath>
+            <xpath expr="//notebook//page[@name='other_information']//field[@name='team_id']" position="after">
+                <field name="so_contract_type" readonly="state == 'sale'"/>
+            </xpath>
+            <xpath expr="//notebook//page[@name='order_lines']//list//field[@name='tax_ids']" position="after">
+                <field name="sol_contract_type" optional="show" readonly="parent.state == 'sale'" invisible="not product_id" column_invisible="parent.so_contract_type != 'per_line'" width="150px"/>
+            </xpath>
+        </field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="mode">extension</field>
+        <field name="model">sale.order</field>
+        <field name="name">sale.order.form.inherit.construction_developer</field>
+        <field name="priority">1600</field>
+        <field name="type">form</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="action_progress_view" model="ir.actions.act_window">
+        <field name="view_id" ref="sale_order_list_view"/>
+        <field name="search_view_id" ref="sale_order_filter"/>
+    </record>
+    <record id="account_move_form_view_inherit" model="ir.ui.view">
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="before">
+                <field name="reference" optional="show" decoration-muted="1" width="79" options="{'hide_trailing_zeros': true}" string="#"/>
+            </xpath>
+        </field>
+        <field name="inherit_id" ref="sale.account_invoice_form"/>
+        <field name="mode">extension</field>
+        <field name="model">account.move</field>
+        <field name="name">account.move.form.inherit.construction_developer</field>
+        <field name="priority">1600</field>
+        <field name="type">form</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="mrp_bom_list_view" model="ir.ui.view">
+        <field name="arch" type="xml">
+        <list>
+            <field name="sequence" widget="handle"/>
+            <field name="code"/>
+            <field name="product_tmpl_id" optional="show"/>
+            <field name="product_id" optional="show"/>
+            <field name="product_uom_id" optional="show"/>
+            <field name="unit_cost" optional="show" widget="monetary"/>
+            <field name="unit_price" optional="show" widget="monetary"/>
+            <field name="unit_margin" optional="show" widget="percentage"/>
+        </list>
+        </field>
+        <field name="model">mrp.bom</field>
+        <field name="name">mrp_bom.view.list</field>
+        <field name="type">list</field>
+        <field name="active" eval="True"/>
+    </record>
+    <record id="mrp_bom_form_view_inherit_construction" model="ir.ui.view">
+        <field name="name">mrp.bom.form.inherit.construction</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="before">
+                <header>
+                    <button string="Set as Template" type="action" invisible="is_template or not id" name="%(server_action_set_bom_as_template)d" title="Sets the current work item as new template (archives the current template if any)."/>
+                </header>
+                <div class="alert alert-info" role="alert" style="height: 40px; margin-bottom:0px;" invisible="not is_template or product_bom_template_id == False or product_bom_template_id == id">
+                    Saving this BoM will archive the current one for this product.
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='code']" position="attributes">
+                <attribute name="required">1</attribute>
+                <attribute name="placeholder">Name...</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_id'][1]" position="attributes">
+                <attribute name="readonly">not is_template</attribute>
+                <attribute name="invisible">targeted_so_id</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_id'][1]" position="after">
+                <field name="reference" readonly="id and not is_template" groups="product.group_product_variant"/>
+            </xpath>
+            <xpath expr="//field[@name='product_id'][2]" position="attributes">
+                <attribute name="readonly">not is_template</attribute>
+                <attribute name="invisible">targeted_so_id</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_id'][2]" position="after">
+                <field name="reference" readonly="id and not is_template" groups="!product.group_product_variant"/>
+            </xpath>
+            <xpath expr="//field[@name='product_uom_id']" position="attributes">
+                <attribute name="invisible">not product_id</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='product_uom_id']" position="after">
+                <field name="unit_custom_id" string="Unit" force_save="1" options="{'no_open': True}" placeholder="m²" invisible="product_id" required="not product_id"/>
+            </xpath>
+            <xpath expr="//group/group[1]" position="inside">
+                <field name="unit_cost" widget="monetary" force_save="1" readonly="True"/>
+                <label for="unit_price"/>
+                <div class="o_row">
+                    <field name="unit_price" class="oe_inline mw-50" widget="monetary" force_save="1" readonly="not is_margin_fixed"/>
+                    <button type="action" class="btn btn-secondary oe_inline" name="%(server_action_recompute_price_with_components_prices)d" invisible="not is_margin_fixed" string="Recompute" help="Recomputes the unit price based on components"/>
+                </div>
+                <label for="unit_margin"/>
+                <div class="o_row">
+                    <field name="unit_margin" widget="percentage" class="oe_inline mw-50" force_save="1" readonly="not is_margin_fixed"/>
+                    <label for="is_margin_fixed"/>
+                    <field name="is_margin_fixed" class="oe_inline" force_save="1" help="When set, unit price is computed based on unit margin"/>
+                </div>
+            </xpath>
+            <!-- In mrp.bom standard form view, list is basically list, not tree -->
+            <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_id']" position="after">
+                <field name="unit_cost" optional="show" widget="monetary"/>
+                <field name="unit_price" optional="show" widget="monetary"/>
+                <field name="margin" optional="show" widget="percentage"/>
+            </xpath>
+            <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_qty']" position="after">
+                <field name="unit_id" optional="show" readonly="True"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="mrp_bom_line_list_view" model="ir.ui.view">
+        <field name="model">mrp.bom.line</field>
+        <field name="name">mrp_bom_line.view.list</field>
+        <field name="type">list</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list open_form_view="false" create="0">
+                <field name="sale_order_id" widget="many2one" optional="show"/>
+                <field name="line_reference" optional="show"/>
+                <field name="product_id" widget="many2one" optional="show"/>
+                <field name="bom_id" widget="many2one" optional="show"/>
+                <field name="unit_id" widget="many2one" optional="show"/>
+                <field name="demand" optional="show"/>
+                <field name="consumed" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="mrp_bom_line_search_view" model="ir.ui.view">
+        <field name="model">mrp.bom.line</field>
+        <field name="name">mrp_bom_line.search.view</field>
+        <field name="type">search</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+        <search>
+            <field name="product_id"/>
+            <field name="bom_id"/>
+            <field name="sale_order_id"/>
+            <field name="unit_id"/>
+            <field name="demand"/>
+            <field name="consumed"/>
+            <separator/>
+            <group>
+                <filter string="Product" name="group_by_product" context="{'group_by':'product_id'}"/>
+                <filter string="Order" name="group_by_order" context="{'group_by':'sale_order_id'}"/>
+                <filter string="BoM" name="group_by_bom" context="{'group_by':'bom_id'}"/>
+            </group>
+        </search>
+        </field>
+    </record>
+
+    <record id="mrp_bom_search_view" model="ir.ui.view">
+        <field name="arch" type="xml">
+        <search>
+            <field name="code"/>
+            <field name="product_id"/>
+            <field name="reference"/>
+            <separator/>
+            <filter string="Archived" name="archived_mrp_bom" domain="[['active', '=', False]]"/>
+            <separator/>
+        </search>
+        </field>
+        <field name="model">mrp.bom</field>
+        <field name="name">mrp_bom.search.view</field>
+        <field name="type">search</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="project_form_view_extension" model="ir.ui.view">
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="mode">extension</field>
+        <field name="model">project.project</field>
+        <field name="name">project.project.form.inherit.view</field>
+        <field name="priority">1600</field>
+        <field name="type">form</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="action" name="%(action_compute_cost_nature_analysis_report)d"
+                        icon="fa-indent"
+                        context="{'project_id': id}"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Cost Nature</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_order_form_view_extension" model="ir.ui.view">
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_line']/list//field[@name='route_ids']" position="after">
+                <button name="%(server_action_open_sol_bom)d" type="action" class="btn btn-link" icon="fa-magic" width="1" invisible="not line_bom_id" string=" "/>
+            </xpath>
+            <xpath expr="//create[@name='add_note_control']" position="after">
+                <button string="Add BoM" name="%(action_window_add_bom)d" type="action" class="px-4 btn-link" context="{'so_id': parent.id}"/>
+            </xpath>
+            <xpath expr="//form/sheet/div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="action" name="%(action_compute_cost_nature_analysis_report)d"
+                        icon="fa-indent"
+                        context="{'active_ids': [id]}"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Cost Nature</span>
+                    </div>
+                </button>
+                <button class="oe_stat_button" type="action" name="%(action_project_mrp_bom_line_view_from_so)d"
+                        icon="fa-shopping-cart"
+                        context="{'active_id': id}"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Procurement</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="mode">extension</field>
+        <field name="model">sale.order</field>
+        <field name="name">sale.order.form.inherit.view</field>
+        <field name="priority">1600</field>
+        <field name="type">form</field>
+        <field name="active" eval="True"/>
+    </record>
+
+    <record id="product_category_form_view_extension" model="ir.ui.view">
+        <field name="name">product.category.view.form.inherit</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="mode">extension</field>
+        <field name="type">form</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='first']" position="before">
+                <group name="outer">
+                    <group name="second">
+                        <field name="cost_nature" class="oe_inline"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//group[@name='second']" position="before">
+                <xpath expr="//group[@name='first']" position="move"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project_template_view_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.view.form.inherit</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="model">product.template</field>
+        <field name="mode">extension</field>
+        <field name="active" eval="True"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <button name="action_view_sales" position="after">
+                <button
+                    class="oe_stat_button"
+                    name="%(action_window_see_boms_from_product_template)d"
+                    type="action" icon="fa-magic"
+                    invisible="bom_template_count == 0"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value d-flex gap-1">
+                            <field name="bom_template_count" widget="statinfo" nolabel="1" class="oe_inline"/>
+                        </span>
+                        <span class="o_stat_text">BoMs</span>
+                    </div>
+                </button>
+            </button>
+            <xpath expr="//form/sheet/*[1]" position="before">
+                <div class="alert alert-warning text-center o_form_header" invisible="uom_matches_category" role="alert">
+                    <a class="close" data-bs-dismiss="alert" href="#">x</a>
+                    <div>
+                        <strong>Product Unit is not compatible with the Category Cost Nature</strong>
+                    </div>
+                    <div>
+                        Consider using a time related unit.
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_product_form_view_extension" model="ir.ui.view">
+        <field name="arch" type="xml">
+            <button name="action_view_sales" position="after">
+                <button
+                    class="oe_stat_button"
+                    name="%(action_window_see_boms_from_product_product)d"
+                    type="action" icon="fa-magic"
+                    invisible="bom_template_count == 0"
+                >
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_value d-flex gap-1">
+                            <field name="bom_template_count" widget="statinfo" nolabel="1" class="oe_inline"/>
+                        </span>
+                        <span class="o_stat_text">BoMs</span>
+                    </div>
+                </button>
+            </button>
+        </field>
+        <field name="inherit_id" ref="sale.product_form_view_sale_order_button"/>
+        <field name="mode">extension</field>
+        <field name="model">product.product</field>
+        <field name="name">product.product.form.inherit.view</field>
+        <field name="priority">1600</field>
+        <field name="type">form</field>
+        <field name="active" eval="True"/>
+    </record>
+
+<!-- remark -->
+    <record id="view_construction_remark_form" model="ir.ui.view">
+        <field name="name">construction_developer.construction_remark.form</field>
+        <field name="model">construction.remark</field>
+        <field name="type">form</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="stage_id" domain="[('project_ids', 'in', project_id)]" widget="statusbar" options="{'clickable': '1'}" invisible="not project_id and not stage_id"/>
+                </header>
+                <sheet>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="d-flex w-100">
+                            <field name="name" default_focus="1" options="{'line_breaks': False}" widget="text" class="text-truncate w-md-75 w-100 pe-2" placeholder="Remark Title..."/>
+                        </h1>
+                        <div class="d-flex justify-content-end align-items-center px-1">
+                            <field name="priority" class="h3 pe-2" widget="priority_switch"/>
+                        </div>
+                        <div class="d-flex justify-content-end o_state_container">
+                            <field name="state" widget="project_remark_state_selection" class="o_task_state_widget" />
+                        </div>
+                    </div>
+                    <group>
+                        <field name="stage_id" invisible="1"/>
+                        <group>
+                            <field name="project_id" required="True"/>
+                            <field name="partner_id" string="Owner"/>
+                            <field name="reference" invisible="not id"/>
+                            <field name="event_id" invisible="update_id or not (update_id or event_id)"/>
+                            <field name="update_id" invisible="event_id or not (update_id or event_id)"/>
+                        </group>
+                        <group>
+                            <field name="date" widget="date"/>
+                            <field name="date_deadline" decoration-danger="date_deadline and date_deadline &lt; current_date" decoration-bf="date_deadline and date_deadline &lt; current_date"/>
+                            <field name="location" placeholder="ex. 2nd floor, bathroom"/>
+                            <field name="remark_category_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="description_page" string="Description">
+                            <field name="description" type="html" options="{'collaborative': true, 'resizable': false}" placeholder="Add details about this remark..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_construction_remark_list" model="ir.ui.view">
+        <field name="name">construction_remarks.construction_remark.view.list</field>
+        <field name="model">construction.remark</field>
+        <field name="type">list</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list default_order="priority,reference">
+                <field name="reference"/>
+                <field name="priority" widget="priority" options="{'is_toggle_mode': false}"/>
+                <field name="remark_category_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="date_deadline" widget="remaining_days"/>
+                <field name="stage_id"/>
+                <field name="state" widget="project_remark_state_selection" class="o_task_state_widget"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_construction_remark_list_one2many" model="ir.ui.view">
+        <field name="name">construction_remarks.construction_remark.view.list.one2many</field>
+        <field name="model">construction.remark</field>
+        <field name="type">list</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list default_order="priority, reference">
+                <!-- column_invisible fields required for the modal to save them -->
+                <field name="project_id" column_invisible="1"/>
+                <field name="event_id" column_invisible="1"/>
+                <field name="stage_id" column_invisible="1"/>
+                <field name="reference" invisible="not id"/>
+                <field name="priority" widget="priority" options="{'is_toggle_mode': false}"/>
+                <field name="remark_category_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="date_deadline" widget="remaining_days"/>
+                <field name="state" widget="project_remark_state_selection" class="o_task_state_widget"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_construction_remark_search" model="ir.ui.view">
+        <field name="name">construction_developer.construction_remark.view.search</field>
+        <field name="model">construction.remark</field>
+        <field name="type">search</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Remarks" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="remark_category_ids"/>
+                <field name="stage_id"/>
+                <field name="project_id"/>
+                <field name="partner_id" operator="child_of"/>
+                <filter string="My Remarks" name="user_remarks" domain="[('partner_id.user_ids', '=', uid)]"/>
+                <filter string="Unassigned" name="unassigned" domain="[('partner_id', '=', False)]"/>
+                <separator/>
+                <filter string="Creation Date" name="creation_date_filter" date="create_date"/>
+                <filter string="Deadline" name="date_deadline" date="date_deadline">
+                    <filter name="deadline_future" string="Future" domain="[('date_deadline', '&gt;=', 'today +1d')]"/>
+                    <filter name="deadline_this_week" string="This Week" domain="[
+                        ('date_deadline', '&gt;=', '=week_start'),
+                        ('date_deadline', '&lt;', '=week_start +1w'),
+                    ]"/>
+                    <filter name="deadline_today" string="Today" domain="[
+                        ('date_deadline', '&gt;=', 'today'),
+                        ('date_deadline', '&lt;', 'today +1d'),
+                    ]"/>
+                    <filter name="deadline_past_due" string="Overdue" domain="[('date_deadline', '&lt;', 'today')]"/>
+                </filter>
+                <separator/>
+                <filter string="Open" name="open_remarks" domain="[('state', 'not in', ['1_done', '1_canceled'])]"/>
+                <filter string="Closed" name="closed_remarks" domain="[('state', 'in', ['1_done', '1_canceled'])]"/>
+                <separator/>
+                <group>
+                    <filter string="Owner" name="owner" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Stage" name="stage" context="{'group_by': 'stage_id'}"/>
+                    <filter string="Project" name="project" context="{'group_by': 'project_id'}"/>
+                    <filter string="Priority" name="groupby_priority" context="{'group_by': 'priority'}"/>
+                    <filter string="Categories" name="categories" context="{'group_by': 'remark_category_ids'}"/>
+                    <filter string="Creation Date" name="create_date" context="{'group_by': 'create_date'}"/>
+                    <filter string="Deadline" name="deadline" context="{'group_by': 'date_deadline'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="quick_create_remark_form" model="ir.ui.view">
+        <field name="name">construction_developer.construction_remark.form.quick_create</field>
+        <field name="model">construction.remark</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form class="o_form_project_tasks">
+                <group>
+                    <field name="name" string="Remark Title" placeholder="e.g. Broken window" required="1"/>
+                    <field name="project_id"
+                            widget="project"
+                            invisible="context.get('default_project_id', False)"
+                            placeholder="Private"
+                            class="o_project_task_project_field"
+                    />
+                    <field name="partner_id"/>
+                    <!-- trigger the computation of date -->
+                    <field name="date" invisible="1"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    <record id="view_construction_remark_kanban" model="ir.ui.view">
+        <field name="name">construction_developer.construction_remark.view.kanban</field>
+        <field name="model">construction.remark</field>
+        <field name="type">kanban</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <kanban default_group_by="stage_id" group_create="1" quick_create_view="construction_developer.quick_create_remark_form">
+                <templates>
+                    <t t-name="card">
+                        <main t-att-class="['1_done', '1_canceled'].includes(record.state.raw_value) ? 'opacity-50' : ''">
+                            <field name="name" display="full" placeholder="e.g. Apartment A0"/>
+                            <div class="text-muted d-flex flex-column">
+                                <field name="partner_id"/>
+                            </div>
+                            <field name="remark_category_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                            <field t-if="record.date_deadline.raw_value" invisible="state in ['1_done', '1_canceled']" name="date_deadline" widget="remaining_days"/>
+                            <footer t-if="!selection_mode" class="pt-1">
+                                <div class="d-flex align-items-center gap-1">
+                                    <field name="priority" class="pt-1" widget="priority"/>
+                                </div>
+                                <div class="d-flex ms-auto">
+                                    <field name="reference" class="text-muted"/>
+                                    <field name="state" class="ms-1" widget="project_remark_state_selection" options="{'is_toggle_mode': false}"/>
+                                </div>
+                            </footer>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+<!-- remark stage -->
+    <record id="view_construction_remark_stage_form" model="ir.ui.view">
+        <field name="name">construction_remarks.construction_remark_stage.view.form</field>
+        <field name="model">construction.remark.stage</field>
+        <field name="type">form</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form>
+                <header/>
+                <sheet string="Remark Stages">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="d-flex w-100">
+                            <field name="name" options="{'line_breaks': False}" widget="text" class="o_task_name text-truncate w-md-75 w-100 pe-2" placeholder="Stage Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="project_ids" widget="many2many_tags"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_construction_remark_stage_list" model="ir.ui.view">
+        <field name="name">construction_remarks.construction_remark_stage.view.list</field>
+        <field name="model">construction.remark.stage</field>
+        <field name="type">list</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list editable="top" default_order="sequence">
+                <field name="sequence" widget="handle" optional="show"/>
+                <field name="name"/>
+                <field name="project_ids" widget="many2many_tags" required="True"/>
+            </list>
+        </field>
+    </record>
+<!-- remark category -->
+    <record id="view_construction_remark_category_form" model="ir.ui.view">
+        <field name="name">construction_remarks.construction_remark_category.view.form</field>
+        <field name="model">construction.remark.category</field>
+        <field name="type">form</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <form>
+                <header/>
+                <sheet string="Remark Categories">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h1 class="d-flex w-100">
+                            <field name="name" options="{'line_breaks': False}" widget="text" class="o_task_name text-truncate w-md-75 w-100 pe-2" placeholder="Category Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <field name="color" widget="color_picker"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_construction_remark_category_list" model="ir.ui.view">
+        <field name="name">construction_remarks.construction_remark_category.view.list</field>
+        <field name="model">construction.remark.category</field>
+        <field name="type">list</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list editable="top">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </list>
+        </field>
+    </record>
+
+<!-- new notebook pages in existing models -->
+    <record id="view_calendar_event_form_inherit" model="ir.ui.view">
+        <field name="name">calendar.event.form.inherit</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="model">calendar.event</field>
+        <field name="mode">extension</field>
+        <field name="active" eval="True"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='page_invitations']" position="after">
+                <page name="remarks" string="Remarks">
+                    <group class="mb-0">
+                        <field name="project_id" class="mb-0"/>
+                    </group>
+                    <field name="remark_ids" readonly="not project_id" nolabel="1" context="{
+                        'default_project_id': project_id,
+                        'default_event_id': id,
+                        'list_view_ref': 'construction_developer.view_construction_remark_list_one2many',
+                    }"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="project_update_view_form_inherit" model="ir.ui.view">
+        <field name="name">project.update.view.form.inherit</field>
+        <field name="inherit_id" ref="project.project_update_view_form"/>
+        <field name="model">project.update</field>
+        <field name="mode">extension</field>
+        <field name="active" eval="True"/>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='description']" position="after">
+                <page name="remarks" string="Remarks">
+                    <field name="remark_ids" nolabel="1" context="{
+                        'default_project_id': project_id,
+                        'default_update_id': id,
+                        'list_view_ref': 'construction_developer.view_construction_remark_list_one2many',
+                    }"/>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+<!-- Cost Nature Analysis views -->
+     <record id="view_construction_cost_nature_analysis_report_search" model="ir.ui.view">
+        <field name="name">construction_developer.construction_cost_nature_analysis_report.view.search</field>
+        <field name="model">construction.cost.nature.analysis.report</field>
+        <field name="type">search</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <search>
+                <field name="so_id" string="Sale Order" filter_domain="[('so_id.name', 'ilike', self)]"/>
+                <field name="bom_id" string="BoM" filter_domain="[('bom_id.code', 'ilike', self)]"/>
+                <field name="product_id" string="Product" filter_domain="[('product_id.name', 'ilike', self)]"/>
+                <field name="category_id" string="Category" filter_domain="[('category_id.name', 'ilike', self)]"/>
+                <field name="cost_nature" string="Cost Nature" filter_domain="[('cost_nature', 'ilike', self)]"/>
+                <separator/>
+                <filter string="Material" name="material" domain="[('cost_nature', '=', 'material')]"/>
+                <filter string="Equipment" name="equipment" domain="[('cost_nature', '=', 'equipment')]"/>
+                <filter string="Labour" name="labour" domain="[('cost_nature', '=', 'labour')]"/>
+                <separator/>
+                <filter string="Positive Margin" name="positive_margin" domain="[('margin', '>', 0)]"/>
+                <filter string="Negative Margin" name="negative_margin" domain="[('margin', '&lt;', 0)]"/>
+                <separator/>
+                <group>
+                    <filter string="Cost Nature" name="group_by_cost_nature" context="{'group_by': 'cost_nature'}"/>
+                    <filter string="Category" name="group_by_category" context="{'group_by': 'category_id'}"/>
+                    <filter string="Sale Order" name="group_by_sale_order" context="{'group_by': 'so_id'}"/>
+                    <filter string="Product" name="group_by_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="BoM" name="group_by_bom" context="{'group_by': 'bom_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_margin_report_analysis_list" model="ir.ui.view">
+        <field name="name">construction_cost_nature_analysis_report.view.list</field>
+        <field name="model">construction.cost.nature.analysis.report</field>
+        <field name="active" eval="True"/>
+        <field name="arch" type="xml">
+            <list string="Cost Nature Analysis" default_order="margin DESC, total_cost DESC">
+                <field name="cost_nature" optional="hide"/>
+                <field name="category_id" widget="many2one" optional="hide"/>
+                <field name="so_id" widget="many2one" optional="hide"/>
+                <field name="product_id" widget="many2one" optional="show"/>
+                <field name="bom_id" widget="many2one" optional="show"/>
+                <field name="quantity" optional="hide"/>
+                <field name="total_price" sum="Sum of Prices" optional="show"/>
+                <field name="total_cost" sum="Sum of Costs" optional="show"/>
+                <field name="cost_share" widget="percentage" sum="Sum of Cost Shares" optional="show"/>
+                <field name="margin" sum="Sum of Margins" optional="show"/>
+                <field name="margin_percent" widget="percentage" avg="Average Margin" optional="show"/>
+                <field name="margin_share" widget="percentage" sum="Sum of Margin Shares" optional="show"/>
+            </list>
+        </field>
+    </record>
+</odoo>
