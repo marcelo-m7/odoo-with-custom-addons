@@ -1,5 +1,5 @@
 {
-    'name': 'Construction Builder',
+    'name': 'Builder',
     'version': '19.0.1.3',
     'category': 'Construction',
     'depends': [
